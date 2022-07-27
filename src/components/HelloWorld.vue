@@ -1,43 +1,53 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+
+  <div @click="display">
+    <h1>{{ count }}</h1>
+    <h1>{{ countreactive.count }}</h1>
+    <!-- <h1>{{ countobject.count }}</h1> -->
+    <!-- <h1>{{ countarray[0].count }}</h1> -->
   </div>
+
 </template>
 
 <script>
+import { count, countreactive, countarray, countobject } from '@/utl/index.js'
+import { onMounted, computed, onBeforMount, watch, ref } from 'vue'
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
+    msg: String           //接收来自父组件的参数
   },
-  setup(props){
-console.log(msg)
+  setup(props, context) {
+    function display() {
+      console.log('这是方法的使用')
+      //1.这是方法的实现
+    }
+    //2.声明周期，所有的v2生命周期前面加上on
+    onMounted(() => {
+      console.log('haha')
+      //6.这是子向父组件传参，'vue3'是传的值
+      context.emit('hello', 'vue3')
+      // 代替这种写法this.$emit()        子向父传参
+    });
+    // onBeforMount(() => { });
+    const test = ref('')
+    //3.watch
+    watch(test, (currentvalue, oldvalue) => {
+
+    });
+    //4.computed
+    const textcalc = computed(() => { test.value + 'lk' })
+    //5.props
+    console.log(props.msg)//使用父组件传来的参数，用propos.
+    //如何创建响应式变量？
+    //所有模板中想要绑定的方法和变量，都要在这setup函数中return
+    return {
+      count,
+      countreactive,
+      countarray,
+      countobject,
+      display
+    }
   }
 }
 </script>
@@ -47,14 +57,17 @@ console.log(msg)
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: #42b983;
 }
